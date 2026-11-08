@@ -1,0 +1,50 @@
+# ProServe Grocery Partner – Netlify configuration
+# Production  = pushes to `main`  (each production deploy uses Netlify credits)
+# Dev server  = pushes to `dev`   (branch deploys are free)
+# Secrets are NEVER stored here – they live in Netlify environment variables per context.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Single-page app: every non-API route serves index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Security headers for all static responses (API responses set their own headers in code)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(self \"https://checkout.razorpay.com\")"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://checkout.razorpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://lumberjack.razorpay.com https://api.razorpay.com; frame-src https://api.razorpay.com https://checkout.razorpay.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# Keep the dev server out of search engines
+[context.branch-deploy]
+  command = "npm run build && printf 'User-agent: *\\nDisallow: /\\n' > dist/robots.txt"
+
+[context.deploy-preview]
+  command = "npm run build && printf 'User-agent: *\\nDisallow: /\\n' > dist/robots.txt"

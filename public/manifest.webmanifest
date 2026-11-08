@@ -1,0 +1,16 @@
+{
+  "name": "ProServe Grocery Partner",
+  "short_name": "ProServe",
+  "description": "Wholesale groceries for ProServe partners",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F4F7F0",
+  "theme_color": "#1E7B3A",
+  "lang": "ta",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
